@@ -1,11 +1,73 @@
-/**
- * This file is just a silly example to show everything working in the browser.
- * When you're ready to start on your site, clear the file. Happy hacking!
- **/
+import { v4 as uuidV4 } from 'uuid';
 
-import confetti from 'canvas-confetti';
+type Task = {
+  id: string;
+  task: string;
+  description: string;
+  isCompleted: boolean;
+  createdAt: Date;
+};
 
-confetti.create(document.getElementById('canvas') as HTMLCanvasElement, {
-  resize: true,
-  useWorker: true,
-})({ particleCount: 200, spread: 200 });
+const taskList = document.querySelector<HTMLUListElement>('.taskList');
+const taskForm = document.querySelector<HTMLFormElement>('.taskForm');
+const taskInput = document.querySelector<HTMLInputElement>('.newTaskInput');
+const descriptionInput = document.querySelector<HTMLInputElement>(
+  '.newDescriptionInput',
+);
+const tasks: Task[] = loadTasks();
+tasks.map((task) => createTask(task));
+
+taskForm?.addEventListener('submit', (e): void => {
+  e.preventDefault();
+  if (
+    descriptionInput === null ||
+    taskInput === null ||
+    descriptionInput?.value === undefined ||
+    descriptionInput?.value === '' ||
+    taskInput?.value === undefined ||
+    taskInput?.value === ''
+  ) {
+    return;
+  }
+  const newTask: Task = {
+    id: uuidV4(),
+    task: taskInput?.value,
+    description: descriptionInput?.value,
+    isCompleted: false,
+    createdAt: new Date(),
+  };
+  tasks.push(newTask);
+  saveTasks();
+  createTask(newTask);
+  taskInput.value = '';
+  descriptionInput.value = '';
+});
+
+function createTask(task: Task) {
+  const item = document.createElement('li');
+  const checkbox = document.createElement('input');
+  checkbox.type = 'checkbox';
+  checkbox.checked = task.isCompleted;
+  checkbox.addEventListener('change', () => {
+    task.isCompleted = checkbox.checked;
+    saveTasks();
+  });
+  const title = document.createElement('label');
+  title.append(checkbox, task.task);
+  const description = document.createElement('p');
+  description.textContent = task.description;
+  item.append(title, description);
+  taskList?.append(item);
+}
+
+function saveTasks() {
+  localStorage.setItem('TASKS', JSON.stringify(tasks));
+}
+
+function loadTasks(): Task[] {
+  const tasksJSON = localStorage.getItem('TASKS');
+  if (tasksJSON === null) {
+    return [];
+  }
+  return JSON.parse(tasksJSON);
+}
