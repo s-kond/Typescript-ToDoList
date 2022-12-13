@@ -1,0 +1,48 @@
+body {
+  text-align: center;
+}
+
+.taskList {
+  margin: 0 auto;
+  list-style-type: none;
+  width: 50%;
+  min-width: 300px;
+}
+
+.taskList > li {
+  margin: 10px 0;
+  padding: 5px;
+  border-radius: 10px;
+  background-color: lightgray;
+  text-align: left;
+}
+
+.taskList > li > p {
+  margin: 5px 50px;
+  font-style: italic;
+}
+
+.taskList > li > label {
+  margin: 5px 10px;
+  font-weight: bold;
+}
+
+.taskList > li > label > input {
+  margin-right: 10px;
+}
+
+.taskForm {
+  display: flex;
+  flex-direction: column;
+  width: 30%;
+  margin: 0 auto;
+}
+
+.taskForm > input {
+  margin-bottom: 10px;
+}
+
+.taskForm > label {
+  margin-bottom: 3px;
+  font-weight: bold;
+}
